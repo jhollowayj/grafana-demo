@@ -1,5 +1,13 @@
-FROM scratch
+# Build image
+FROM golang:alpine AS builder
 
-ADD ./bin/demo /bin/demo
+WORKDIR /app
+ADD . /app
+RUN go build -o /bin/demo /app/cmd/demo
 
+# Deploy image
+
+FROM alpine
+
+COPY --from=builder /bin/demo /bin/demo
 ENTRYPOINT ["/bin/demo"]
