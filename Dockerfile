@@ -1,5 +1,5 @@
 # Build image
-FROM golang:alpine AS builder
+FROM golang:1.17 AS builder
 
 WORKDIR /app
 ADD . /app

@@ -1,5 +1,5 @@
 build:
-	docker build --rm -t jhollowayj/grafana-demo .
+	docker build -t jhollowayj/grafana-demo .
 
 run:
-	docker run --rm jhollowayj/grafana-demo
+	docker run jhollowayj/grafana-demo
