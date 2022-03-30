@@ -54,7 +54,7 @@ func init() {
 		Help:      "Basic example of a histogram",
 
 		// Histograms also have a filed for buckets a bucket field
-		Buckets: prometheus.LinearBuckets(0, 0.050, 11), // 0, 50, 100, 150 ... 500 ms
+		Buckets: prometheus.LinearBuckets(0.5, 0.1, 11), // 500, 600, 700, ... 1400, 1500 ms
 	})
 }
 

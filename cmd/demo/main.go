@@ -59,7 +59,7 @@ func runThreads(ctx context.Context) error {
 		}
 	}
 
-	// Counter (goes up by 1 ever second)
+	// Counter (goes up by 1 every 1.5s)
 	g.Go(repeatFunc(ctx, randDelay(1, 1), func() {
 		log.Printf("counter: increment\n")
 
@@ -85,9 +85,8 @@ func runThreads(ctx context.Context) error {
 
 	// Histogram (new value roughly every 1s)
 	g.Go(repeatFunc(ctx, randDelay(1, 1), func() {
-		// *1000 to convert to ms
-		// /3 to give us 300ms as 1stddev
-		val := math.Abs(rand.NormFloat64() * 1000 / 3)
+		// mean: 1s; stddev: 300ms; Abs because we can't have negative time.
+		val := math.Abs(rand.NormFloat64()*0.300 + 1)
 		log.Printf("histogram: %v", val)
 
 		metricHistogram.Observe(val)
