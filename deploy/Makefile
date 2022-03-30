@@ -1,3 +1,4 @@
+# This section allow me to pass in --detach flags to docker compose
 RUN_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
 $(eval $(RUN_ARGS):;@:)
 
@@ -10,11 +11,11 @@ network:
 # `make metrics -- up --detach`
 # `make metrics down`
 metrics: 
-	DEPLOY_FOLDER=${DEPLOY_FOLDER}/configs docker-compose -f metrics.docker-compose.yaml $(RUN_ARGS)
+	docker-compose -f metrics.docker-compose.yaml $(RUN_ARGS)
 
 # Usage:
-# `make metrics -- up --detach`
-# `make metrics down`
-gobin:
-	docker-compose -f single.docker-compose.yaml $(RUN_ARGS)
+# `make apps -- up --detach`
+# `make apps down`
+apps:
+	docker-compose -f service.docker-compose.yaml $(RUN_ARGS)
 

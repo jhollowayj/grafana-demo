@@ -4,7 +4,16 @@ services:
   gobin:
     image: jhollowayj/grafana-demo
     container_name: grafana_demo_gobin
+    entrypoint: ["/bin/demo"]
+    ports:
+      - 9850:9850
+
+  promexample:
+    image: jhollowayj/grafana-demo
+    container_name: grafana_demo_promexample
     entrypoint: ["/bin/promdemo"]
+    ports:
+      - 9850:9850
 
 networks:
   default:
