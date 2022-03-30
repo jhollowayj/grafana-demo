@@ -15,6 +15,7 @@ import (
 
 func main() {
 	ctx := registerCtrlC(context.Background())
+	registerMetrics()
 
 	log.Printf("Starting threads...\n")
 
@@ -32,6 +33,7 @@ func registerCtrlC(ctx context.Context) context.Context {
 
 	go func() {
 		<-c
+		log.Printf("Gracefully shutting down the gobin service\n")
 		cancel()
 	}()
 
@@ -42,6 +44,9 @@ func registerCtrlC(ctx context.Context) context.Context {
 // first error encountered by any of them is returned.
 func runThreads(ctx context.Context) error {
 	g, ctx := errgroup.WithContext(ctx)
+
+	// Start the metric server
+	g.Go(func() error { return runMetricsServer(ctx) })
 
 	constDelay := func(d time.Duration) func() time.Duration {
 		return func() time.Duration {
@@ -55,17 +60,17 @@ func runThreads(ctx context.Context) error {
 	}
 
 	// Counter (goes up by 1 ever second)
-	g.Go(repeater(ctx, constDelay(1*time.Second), func() {
+	g.Go(repeatFunc(ctx, randDelay(1, 1), func() {
 		log.Printf("counter: increment\n")
 
 		metricCounter.Inc()
 		// functions:
 		// .Inc()  // +1
-		// .Add(n) // +n (n can be negative)
+		// .Add(n) // +n (n _must_ be positive)
 	}))
 
 	// Gauge (new value every second, somewhere between 0-10)
-	g.Go(repeater(ctx, constDelay(1*time.Second), func() {
+	g.Go(repeatFunc(ctx, constDelay(1*time.Second), func() {
 		val := rand.Float64() * 10
 		log.Printf("gauger: %v\n", val)
 
@@ -79,8 +84,10 @@ func runThreads(ctx context.Context) error {
 	}))
 
 	// Histogram (new value roughly every 1s)
-	g.Go(repeater(ctx, randDelay(1, 1), func() {
-		val := math.Abs(rand.NormFloat64())
+	g.Go(repeatFunc(ctx, randDelay(1, 1), func() {
+		// *1000 to convert to ms
+		// /3 to give us 300ms as 1stddev
+		val := math.Abs(rand.NormFloat64() * 1000 / 3)
 		log.Printf("histogram: %v", val)
 
 		metricHistogram.Observe(val)
@@ -91,8 +98,8 @@ func runThreads(ctx context.Context) error {
 	return g.Wait()
 }
 
-// repeater takes in a function and runs it continually with the given delay, until the given context is closed.
-func repeater(ctx context.Context, delayCalc func() time.Duration, f func()) func() error {
+// repeatFunc takes in a function and runs it continually with the given delay, until the given context is closed.
+func repeatFunc(ctx context.Context, delayCalc func() time.Duration, f func()) func() error {
 	return func() error {
 		for {
 			select {
