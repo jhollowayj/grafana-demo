@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  gobin:
+    image: jhollowayj/grafana-demo
+    container_name: grafana_demo_gobin
+    entrypoint: ["/bin/promdemo"]
+
+networks:
+  default:
+    external:
+      name: grafana-demo
+

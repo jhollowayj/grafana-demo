@@ -1,0 +1,7 @@
+global:
+  scrape_interval: 1s # By default, scrape targets every 15 seconds.
+
+scrape_configs:
+  - job_name: 'GoBinary'
+    static_configs:
+      - targets: ['gobin:9850']
