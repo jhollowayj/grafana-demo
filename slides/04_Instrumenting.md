@@ -1,15 +1,19 @@
 ---
 marp: true
-theme: default
+theme: gaia
 ---
 
 # Instrumenting Go services
+
+---
 
 ## Import client library
 
 ```go
 import "github.com/prometheus/client_golang/prometheus"
 ```
+
+---
 
 ## Adding http endpoint
 
@@ -20,6 +24,8 @@ import "github.com/prometheus/client_golang/prometheus/promhttp"
 http.Handle("/metrics", promhttp.Handler())
 http.ListenAndServe(*addr, nil)
 ```
+
+---
 
 ## Create Metrics
 
@@ -35,7 +41,13 @@ m = prometheus.NewCounterVec(prometheus.CounterOpts{}, []string{"labels"})
 m = prometheus.NewGaugeVec(prometheus.GaugeOpts{}, []string{"labels"})
 m = prometheus.NewHistogramVec(prometheus.HistogramOpts{}, []string{"labels"})
 m = prometheus.NewSummaryVec(prometheus.SummaryOpts{}, []string{"labels"})
+```
 
+---
+
+## Create Metrics (cont)
+
+```go
 // There's also *Func variants that let you us a callback.
 // The function is called when scraped, so you can look up the value when needed.
 // This is useful if you need to keep track of the count outside of metrics.
@@ -44,7 +56,9 @@ m = prometheus.NewCounterFunc(prometheus.CounterOpts{}, func() float64 {
 })
 ```
 
-### Options
+---
+
+## Options
 
 ```go
 type Opts struct {
@@ -62,8 +76,9 @@ type HistogramOpts struct {
 }
 ```
 
-Fully Qualified metric names are generated as `{Namespace}_{Subsystem}_{Name}`.
-Note: names must be globally unique.
+Fully qualified metric names must be unique and are generated as `{Namespace}_{Subsystem}_{Name}`.
+
+---
 
 ## Register the metrics
 
@@ -73,13 +88,17 @@ prometheus.MustRegister(metricCounter, metricGauge, metricHistogram) // Will pan
 err := prometheus.Register(metric)
 ```
 
-Alternatively, you can use promauto to both create and register.  Beware panics though.
+Alternatively, you can use promauto to both create and register.
 
 ```go
 import "github.com/prometheus/client_golang/prometheus/promauto"
 
 promauto.NewCounter(prometheus.CounterOpts{})
 ```
+
+Beware of panics from reusing a metric name or registering the metric twice.
+
+---
 
 ## Making observations
 

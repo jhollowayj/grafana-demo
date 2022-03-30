@@ -1,7 +1,7 @@
 ---
 marp: true
-theme: default
-math: katex
+theme: gaia
+# math: katex
 ---
 
 # Prometheus Concepts
@@ -10,17 +10,23 @@ math: katex
 
 ## Data Model
 
-### Metric Names and labels
+---
 
-Each time series is a unique _metric name_ and optional _labels_ as key-value pairs.
+### Data Model: Metric `names` and `labels`
 
-`http_request_total` would be the name.
+Each time series is a unique combination of _metric name_ and optional key-value pairs called _labels_.
 
-One set of labels would be `{method=put}`, or `{method=put, status=200}`
+Example name: `http_request_total`
+Example labels: `{method='get', status=200, handler='/version'}`
 
-Note: each combination of metric name + labels is a new time series.  Don't go crazy with labels.
+<br> 
 
-### Samples
+Note: Each combination of label values is a new time series.  Be careful to keep cardinality down.
+i.e. Using `http status` is ok.  Using `User IDs` is not.
+
+---
+
+### Data Model: Samples
 
 Each sample consists of
 
@@ -29,7 +35,7 @@ Each sample consists of
 
 ---
 
-### Notation
+### Data Model: Notation
 
 ```txt
 <metric name>{<label name>=<label value>, ...}
@@ -52,32 +58,32 @@ api_http_requests_total{method="POST", handler="/messages"}
 
 ---
 
-### Counter
+### Metric Types: Counter
 
 Cumulative metric, represents monotonically increasing counter.
 Can only increase or be reset to zero on restart.
 
 Used for:
 
-* Requests served
+* requests served
 * tasks completed
 * error counts
 
 ---
 
-### Gauges
+### Metric Types: Gauges
 
 Single numeric value that can go up and down
 
 Used for:
 
-* Temperatures
+* temperatures
 * current memory usage
 * number of concurrent requests
 
 ---
 
-### Histogram
+### Metric Types: Histogram
 
 A histogram samples observations, counts them in configurable buckets.
 Also provides sum of all observed values.
@@ -89,17 +95,21 @@ Each base metric name exposes multiple series:
 * count of events, exposed as `<basename>_count` (identical to `<basename>_bucket{le="+Inf"}`)
 
 Use of `histogram_quantile()` _function_ to calculate quantiles.
-Can be used for Apdex ("Application Performance Index") calculations:
+i.e. What was the 99th quantile for response latency?
 
+<!--
+Can be used for Apdex ("Application Performance Index") calculations:
 $$
     Apdex_t = \dfrac{SatisfiedCount + (0.5 * ToleratingCount) + (0 * FrustratedCount)}{TotalSamples}
 $$
-
+-->
 ---
 
-### Summary
+### Metric Types: Summary
 
-Very similar to histogram. Calculates quantiles over a sliding time window.
+Very similar to histogram.
+Calculate quantiles over a sliding time window.
+Doesn't need pre-defined buckets, but comes with a much higher computation cost instead.
 
 ---
 
@@ -108,7 +118,7 @@ Very similar to histogram. Calculates quantiles over a sliding time window.
 `job`: The configured job name that the target belongs to.
 `instance`: The `<host>:<port>` part of the target's URL that was scraped.
 
-example of web server with 4x replications:
+Example of web server with 4 replication instances:
 
 ```txt
     job: api-server
@@ -117,5 +127,3 @@ example of web server with 4x replications:
         instance 3: 5.6.7.8:5670
         instance 4: 5.6.7.8:5671
 ```
-
----

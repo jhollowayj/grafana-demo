@@ -1,6 +1,6 @@
 ---
 marp: true
-theme: default
+theme: gaia
 ---
 
 # PromQL
@@ -101,10 +101,14 @@ Valid between:
 
 ---
 
+<style scoped>
+ul {
+  font-size: 90%;
+}
+</style>
 ### Aggregation operators
 
-Used to aggregate the elements of a single instant vector,
-resulting in a new vector of fewer elements with aggregated values.
+Used to aggregate the elements of a single instant vector, resulting in a new vector of fewer elements with aggregated values.
 
 * `sum` (calculate sum over dimensions)
 * `min` (select minimum over dimensions)
@@ -127,12 +131,10 @@ Given the time series of `http_requests_total` with labels for `application`, `i
 
 ```promql
 # These two are the same:
-# Keep labels applications and groups, collapse down the instance labels
+# Keep labels `applications` and `groups`, collapse down the instance labels
 sum without (instance) (http_requests_total)
 sum by (application, group) (http_requests_total)
-```
 
-```promql
 # total of HTTP requests seen in _all_ applications
 sum(http_requests_total)
 
@@ -147,6 +149,11 @@ topk(5, http_requests_total)
 
 ## Functions
 
+<style scoped>
+table {
+  font-size: 80%;
+}
+</style>
 Here's a full list.
 
 |                    |                 |                      |                        |
@@ -169,9 +176,10 @@ Here's a full list.
 
 ---
 
-## Examples
+## Query Examples
 
-### Simple Examples
+---
+### Simple query examples
 
 ```promql
 # all time series with the metric `http_requests_total`
@@ -192,7 +200,7 @@ http_requests_total{status!~"4.."}
 
 ---
 
-### Examples using functions
+### Examples using query functions
 
 ```promql
 # per-second rate, as measured over the last 5 minutes
@@ -214,9 +222,9 @@ sum by (app, proc) (
 
 ---
 
-### Examples using functions (cont)
+### Examples using query functions (cont)
 
-Lets say we have these series
+Lets say we have these series:
 
 ```txt
 instance_cpu_time_ns{app="lion",     proc="web",    rev="34d0f99", env="prod", job="cluster-manager"}

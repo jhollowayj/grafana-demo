@@ -2,7 +2,8 @@
 marp: true
 theme: gaia
 _class: lead
-paginate: true
+# paginate: true
+paginate: false
 backgroundColor: #fff
 ---
 
@@ -12,7 +13,9 @@ Prometheus 101
 
 ---
 
-## Observability -- Asking new questions quickly
+## Observability 
+
+#### Asking new questions quickly
 
 Three pillars of observability
 
@@ -25,7 +28,7 @@ Three pillars of observability
 
 ---
 
-## What is Monitoring and What are Metrics?
+## What is monitoring?
 
 * Allows insight into how things are performing
 * Alerts when something crashes
@@ -39,7 +42,7 @@ Examples of potential problems:
 
 ---
 
-Googles Site Reliability Engineering calls out 4 main metrics
+Googles Site Reliability Engineering calls out 4 main metrics to measure for any given service
 
 * **latency**: time to service a request
 * **traffic**: requests / second
@@ -52,9 +55,6 @@ Googles Site Reliability Engineering calls out 4 main metrics
 
 Prometheus is an open-source systems monitoring and alerting toolkit originally built at SoundCloud, started in 2012.
 
-Prometheus collects and stores its metrics as time series data,
-i.e. metrics information is stored with the timestamp at which it was recorded,
-alongside optional key-value pairs called labels.
 
 ---
 
@@ -66,27 +66,18 @@ Prometheus's main features are:
 * `PromQL`, a flexible query language to leverage this dimensionality
 * no reliance on distributed storage; single server nodes are autonomous
 * time series collection happens via a pull model over HTTP
-* pushing time series is supported via an intermediary gateway
 * targets are discovered via service discovery or static configuration
-* multiple modes of graphing and dashboarding support
 
 See [Prometheus overview docs](https://prometheus.io/docs/introduction/overview/) for more.
-
-Note to self: We will focus on 1&2 today.  3/4/5 are nice to know about.  6 we might show if there is time.
 
 Note: Prometheus should not be used 100% accuracy use cases, such as billing.
 
 ---
 
-## What units are monitored?  These are called "Metrics"
+## What units are monitored?  
 
-A physical computer: `CPU usage`, `Memory usage`, `disk space used`, `disk read/write`, `fan speed`
+A physical computer: `CPU`, `RAM usage`, `disk space`, `fan speed`
 web server: `request times`, `error rates`
 database: `number of active connections`, `number of active queries`.
 
-CubicSvr:
-
-* Current recognizer count
-* total bytes processed
-* rtf over time
-* error counts
+CubicSvr: `Current recognizer count`, `total bytes processed`, `rtf over time`, `error counts`

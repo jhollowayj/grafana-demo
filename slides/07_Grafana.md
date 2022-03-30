@@ -1,8 +1,6 @@
 ---
 marp: true
-theme: default
+theme: gaia
 ---
 
-# Grafana
-
-## TODO
+# Live Demo
