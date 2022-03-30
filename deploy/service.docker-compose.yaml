@@ -13,7 +13,7 @@ services:
     container_name: grafana_demo_promexample
     entrypoint: ["/bin/promdemo"]
     ports:
-      - 9850:9850
+      - 8080:8080
 
 networks:
   default:
