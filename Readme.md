@@ -5,11 +5,11 @@ Example Go program to demonstrate using prometheus, loki, and grafana for observ
 Items of importance:
 
     * Running multiple instances of a service
-    * graphing metrics (line graph, guage, guage)
+    * graphing metrics (line graph, gauge)
     * vectors of those metrics
     * logs
     * graphs of the logs
-    * templates/repeats (what's the techincal name?)
+    * templates/repeats (what's the technical name?)
 
 ## File directory
 
@@ -30,7 +30,11 @@ TODO
 
 Prometheus scrapes your application ever {15s}, then Grafana queries Prometheus as needed.
 Promtail watches file and pushes logs to Loki, then Grafana queries Loki as needed.
-Promtail is typically side-car-ed to your app.
+Promtail is typically a side-car to your app (same pod, different container)
+
+## Important pages
+
+* http://localhost:9090/targets
 
 ## Prometheus Metric Types
 
@@ -40,7 +44,6 @@ Counters - Only goes up. (Use case: number of requests served, tasks completed, 
 Gauges - Can go up or down.  (Use case: temperatures, memory usage, concurrent requests)
 Histograms - Bucketized counts (Use case: request durations, response sizes; help determine SLO (i.e. serve 95% of requests within 300ms))
 Summaries - Like histograms, but more complicated.  See https://prometheus.io/docs/practices/histograms/ for more.
-
 
 ## PromQL
 
